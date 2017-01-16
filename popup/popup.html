@@ -1,0 +1,79 @@
+<!doctype html>
+<html ng-app="AfrostreamApp" ng-csp="">
+<head>
+    <meta charset="UTF-8">
+    <title>Afrostream</title>
+    <!--
+      VENDORS CSS
+    -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+
+    <!--
+      OUR CSS
+    -->
+    <link href="/popup/css/main.css" rel="stylesheet" />
+
+    <!--
+      VENDORS JS
+    -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.3.0/ui-bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.3.0/ui-bootstrap-tpls.min.js"></script>
+    <!--
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.0/locale/fr.js"></script>
+    -->
+    <script src="/popup/js/popup.js"></script>
+    <style>
+    .tab-content>.tab-pane { padding:5px;}
+    .features td { padding: 1px }
+    .features td.name { padding: 0px 5px 0px 5px }
+    .btn.btn-primary.green {
+      background-color: #008600;
+      border-color: #1e8f1e;
+      font-weight: bold;
+    }
+    </style>
+</head>
+<body ng-controller="PopupController" style="width:450px;height:440px">
+  <uib-tabset active="active">
+    <uib-tab index="0" heading="STAGING">
+      <b>Features</b>
+      <table class="features">
+        <tr class="feature" ng-repeat="feature in staging.features">
+            <td>
+              <div class="btn-group" uib-dropdown is-open="isopen">
+                <button type="button" class="btn {{feature.buttonClass}}" uib-dropdown-toggle ng-disabled="disabled" style="overflow:hidden;white-space:nowrap;text-overflow: ellipsis;max-width:200px;">
+                  {{feature.status}} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                  <li role="menuitem"><a href="#" ng-click="feature.showcustom=false;updateFeatureUserValue(feature, null);">Default</a></li>
+                  <li role="menuitem"><a href="#" ng-click="feature.showcustom=false;updateFeatureUserValue(feature, 'on');">ON</a></li>
+                  <li role="menuitem"><a href="#" ng-click="feature.showcustom=false;updateFeatureUserValue(feature, 'off');">OFF</a></li>
+                  <li class="divider"></li>
+                  <li role="menuitem"><a href="#" ng-click="feature.showcustom=true;">CUSTOM</a></li>
+                </ul>
+              </div>
+            </td>
+            <td class="name">
+                <div ng-if="!feature.showcustom">{{feature.name}}</div>
+                <div ng-if="feature.showcustom">
+                  <input type="text" ng-model="feature.user"/>
+                  <button type="button" ng-click="feature.showcustom=false;updateFeatureUserValue(feature, feature.user);">SAVE</button>
+                  <button type="button" ng-click="feature.showcustom=false;updateFeatureUserValue(feature, null);">CANCEL</buton>
+                </div>
+            </td>
+        </tr>
+        </table>
+    </uib-tab>
+    <!--<uib-tab index="1" heading="Prod">
+      <h4>Features</h4>
+      <div ng-repeat="feature in featuresProd">
+
+      </div>
+    </uib-tab>
+  -->
+  </uib-tabset>
+</body>
+</html>

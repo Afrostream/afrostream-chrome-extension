@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+  "name": "Afrostream chrome extension - main",
+  "description": "ᶫᵒᵛᵉᵧₒᵤᶫᵒᵛᵉᵧₒᵤ",
+  "version": "1.0",
+  "background": { "page": "background/background.html" },
+  "content_scripts": [{
+    "matches": ["*://*/*"],
+    "js": [ "content/content.js" ],
+    "urls": []
+  }],
+  "browser_action": {
+    "default_icon": "popup/img/ico.png",
+    "default_popup": "popup/popup.html",
+    "default_title": "Afrostream"
+  },
+  "permissions": [
+    "activeTab",
+    "webRequest",
+    "webRequestBlocking",
+    "*://*/",
+    "storage",
+    "tabs",
+    "contextMenus"
+  ],
+  "content_security_policy": "script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com; object-src 'self'"
+}
