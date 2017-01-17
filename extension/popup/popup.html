@@ -36,21 +36,26 @@
     }
     </style>
 </head>
-<body ng-controller="PopupController" style="width:450px;height:440px">
+<body ng-controller="PopupController" style="width:400px;height:440px">
   <uib-tabset active="active">
-    <uib-tab index="0" heading="STAGING">
-      <b>Features</b>
+    <uib-tab index="0" heading="Options">
+      <h5>General</h5>
+      <input type="checkbox" ng-model="bypassCDNCache" ng-change="updateCDNCacheBypass(bypassCDNCache)"/>&nbsp;bypass cdn cache<br/>
+      <h5>Headers</h5>
+
+    </uib-tab>
+    <uib-tab index="1" heading="Features">
       <table class="features">
-        <tr class="feature" ng-repeat="feature in staging.features">
+        <tr class="feature" ng-repeat="feature in features">
             <td>
               <div class="btn-group" uib-dropdown is-open="isopen">
                 <button type="button" class="btn {{feature.buttonClass}}" uib-dropdown-toggle ng-disabled="disabled" style="overflow:hidden;white-space:nowrap;text-overflow: ellipsis;max-width:200px;">
                   {{feature.status}} <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                  <li role="menuitem"><a href="#" ng-click="feature.showcustom=false;updateFeatureUserValue(feature, null);">Default</a></li>
-                  <li role="menuitem"><a href="#" ng-click="feature.showcustom=false;updateFeatureUserValue(feature, 'on');">ON</a></li>
-                  <li role="menuitem"><a href="#" ng-click="feature.showcustom=false;updateFeatureUserValue(feature, 'off');">OFF</a></li>
+                  <li role="menuitem"><a href="#" ng-click="feature.showcustom=false;updateFeature(feature, null);">Default</a></li>
+                  <li role="menuitem"><a href="#" ng-click="feature.showcustom=false;updateFeature(feature, 'on');">ON</a></li>
+                  <li role="menuitem"><a href="#" ng-click="feature.showcustom=false;updateFeature(feature, 'off');">OFF</a></li>
                   <li class="divider"></li>
                   <li role="menuitem"><a href="#" ng-click="feature.showcustom=true;">CUSTOM</a></li>
                 </ul>
@@ -60,20 +65,13 @@
                 <div ng-if="!feature.showcustom">{{feature.name}}</div>
                 <div ng-if="feature.showcustom">
                   <input type="text" ng-model="feature.user"/>
-                  <button type="button" ng-click="feature.showcustom=false;updateFeatureUserValue(feature, feature.user);">SAVE</button>
-                  <button type="button" ng-click="feature.showcustom=false;updateFeatureUserValue(feature, null);">CANCEL</buton>
+                  <button type="button" ng-click="feature.showcustom=false;updateFeature(feature, feature.user);">SAVE</button>
+                  <button type="button" ng-click="feature.showcustom=false;updateFeature(feature, null);">CANCEL</buton>
                 </div>
             </td>
         </tr>
         </table>
     </uib-tab>
-    <!--<uib-tab index="1" heading="Prod">
-      <h4>Features</h4>
-      <div ng-repeat="feature in featuresProd">
-
-      </div>
-    </uib-tab>
-  -->
   </uib-tabset>
 </body>
 </html>
