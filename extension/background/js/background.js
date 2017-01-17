@@ -28,6 +28,10 @@ window.addHeaderAFR = function (key, value) {
   additionnalHeadersAFR[key] = value;
   updateIco();
 };
+window.removeHeaderAFR = function (key) {
+  delete additionnalHeadersAFR[key];
+  updateIco();
+};
 
 const afrRegex = /(staging\.afrostream\.tv|\-staging\.herokuapp\.com)/;
 

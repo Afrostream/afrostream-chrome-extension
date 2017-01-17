@@ -132,19 +132,26 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
         // cdn cache
         w.enableCDNCacheBypass(JSON.parse(localStorage.getItem('bypassCDNCache')||'false'));
         // features staging
-        var featuresHeaderKey = 'Features';
-        var featuresHeaderValue = JSON.stringify(getUserFeatures($scope.features));
-        w.addHeaderAFR(featuresHeaderKey, featuresHeaderValue);
-        // update icone pour montrer que l'on est actif !
-        //dirty.features = (features.length > 0);
-        //updateIco();
+        const featuresHeaderKey = 'Features';
+        const featuresHeaderValue = JSON.stringify(getUserFeatures($scope.features));
+        if (featuresHeaderValue === '{}') {
+          // no features
+          w.removeHeaderAFR(featuresHeaderKey);
+        } else {
+          w.addHeaderAFR(featuresHeaderKey, featuresHeaderValue);
+        }
       });
     }
 
     // scope -> scope
     $scope.updateScope = function () {
-      console.log('updating scope', $scope.features);
-      $scope.headers = 'Features: '+JSON.stringify(getUserFeatures($scope.features));
+      const featuresHeaderKey = 'Features';
+      const featuresHeaderValue = JSON.stringify(getUserFeatures($scope.features));
+      if (featuresHeaderValue === '{}') {
+        $scope.headers = '';
+      } else {
+        $scope.headers = 'Features: '+featuresHeaderValue;
+      }
     };
 
     $scope.updateScope();
