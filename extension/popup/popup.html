@@ -39,10 +39,12 @@
 <body ng-controller="PopupController" style="width:400px;height:440px">
   <uib-tabset active="active">
     <uib-tab index="0" heading="Options">
-      <h5>General</h5>
+      <h4>General</h4>
       <input type="checkbox" ng-model="bypassCDNCache" ng-change="updateCDNCacheBypass(bypassCDNCache)"/>&nbsp;bypass cdn cache<br/>
-      <h5>Headers</h5>
-
+      <h4>Headers</h4>
+      <pre style="text-align:left;">
+{{headers}}
+      </pre>
     </uib-tab>
     <uib-tab index="1" heading="Features">
       <table class="features">
@@ -71,6 +73,39 @@
             </td>
         </tr>
         </table>
+    </uib-tab>
+    <uib-tab index="2" heading="Auth">
+      <h4>Generate AccessToken</h4>
+      <p>Email: <input type="text" id="email" placeholder="email"/></p>
+      <p>
+      <div class="btn-group" uib-dropdown is-open="envopen">
+        <button type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled" style="overflow:hidden;white-space:nowrap;text-overflow: ellipsis;max-width:200px;">
+          Choose env <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+          <li role="menuitem"><a href="#" ng-click="">staging</a></li>
+          <li role="menuitem"><a href="#" ng-click="">prod</a></li>
+        </ul>
+      </div>
+      <div class="btn-group" uib-dropdown is-open="clientopen">
+        <button type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled" style="overflow:hidden;white-space:nowrap;text-overflow: ellipsis;max-width:200px;">
+          Choose client <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+          <li role="menuitem"><a href="#" ng-click="">front</a></li>
+          <li role="menuitem"><a href="#" ng-click="">taptic</a></li>
+          <li role="menuitem"><a href="#" ng-click="">orange new box</a></li>
+          <li role="menuitem"><a href="#" ng-click="">orange mib4</a></li>
+          <li role="menuitem"><a href="#" ng-click="">bouygues miami</a></li>
+        </ul>
+      </div>
+      </p>
+      <p>
+        <button type="button" class="btn btn-success">GENERATE</button>
+      </p>
+      <pre style="text-align:left;">
+Access-Token:
+      </pre>
     </uib-tab>
   </uib-tabset>
 </body>

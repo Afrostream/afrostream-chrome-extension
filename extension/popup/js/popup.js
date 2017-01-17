@@ -2,7 +2,7 @@ chrome.runtime.getBackgroundPageSafe = function (callback) { chrome.runtime.getB
 
 angular.module('AfrostreamApp', ['ui.bootstrap'])
   .controller('PopupController', function($scope, $http) {
-    $scope.features = { }
+    $scope.features = []
 
     //
     // Methods (could be in another files)
@@ -45,12 +45,14 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
     $scope.updateCDNCacheBypass = function (bypassCDNCache) {
       localStorage.setItem('bypassCDNCache', JSON.stringify(bypassCDNCache));
       // auto-commit des modifs
+      $scope.updateScope();
       $scope.updateBackground();
     };
 
     // Features loading: reading from staging (should be the best env for that...)
     // load: http -> scope
     //       localstorage -> scope
+    //       scope -> scope
     $http({url:'https://afr-api-v1-staging.herokuapp.com/features'})
       .then(function (response) {
         const features = response.data;
@@ -64,8 +66,9 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
           updateFeatureStatus(result);
           return result;
         });
+        $scope.updateScope();
       });
-    // change: scope -> localStorage
+    // change: scope -> scope & scope -> localStorage
     $scope.updateFeature = function (feature, value) {
       feature.user = value;
       updateFeatureStatus(feature);
@@ -73,6 +76,7 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
       const stringifiedUserFeatures = JSON.stringify(getUserFeatures($scope.features));
       localStorage.setItem('features', stringifiedUserFeatures);
       // auto-commit des modifs
+      $scope.updateScope();
       $scope.updateBackground();
     };
 
@@ -83,11 +87,19 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
         w.enableCDNCacheBypass(JSON.parse(localStorage.getItem('bypassCDNCache')||'false'));
         // features staging
         var featuresHeaderKey = 'Features';
-        var featuresHeaderValue = JSON.stringify(getUserFeatures($scope.features));;
+        var featuresHeaderValue = JSON.stringify(getUserFeatures($scope.features));
         w.addHeaderAFR(featuresHeaderKey, featuresHeaderValue);
         // update icone pour montrer que l'on est actif !
         //dirty.features = (features.length > 0);
         //updateIco();
       });
     }
+
+    // scope -> scope
+    $scope.updateScope = function () {
+      console.log('updating scope', $scope.features);
+      $scope.headers = 'Features: '+JSON.stringify(getUserFeatures($scope.features));
+    };
+
+    $scope.updateScope();
   });
