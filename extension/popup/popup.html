@@ -40,6 +40,7 @@
   <uib-tabset active="active">
     <uib-tab index="0" heading="Options">
       <h4>General</h4>
+      <input type="checkbox" ng-model="enableWebrequestHooks" ng-change="updateWebrequestHooksStatus(enableWebrequestHooks)"/>&nbsp;extension active<br/>
       <input type="checkbox" ng-model="bypassCDNCache" ng-change="updateCDNCacheBypass(bypassCDNCache)"/>&nbsp;bypass cdn cache<br/>
       <h4>Headers</h4>
       <pre style="text-align:left;">
@@ -76,15 +77,14 @@
     </uib-tab>
     <uib-tab index="2" heading="Auth">
       <h4>Generate AccessToken</h4>
-      <p>Email: <input type="text" id="email" placeholder="email"/></p>
+      <p>Email: <input type="text" id="email" placeholder="email" ng-model="auth.email"/></p>
       <p>
       <div class="btn-group" uib-dropdown is-open="envopen">
         <button type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled" style="overflow:hidden;white-space:nowrap;text-overflow: ellipsis;max-width:200px;">
-          Choose env <span class="caret"></span>
+          {{auth.env||'Choose env'}} <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-          <li role="menuitem"><a href="#" ng-click="">staging</a></li>
-          <li role="menuitem"><a href="#" ng-click="">prod</a></li>
+          <li ng-repeat="env in auth.envs" role="menuitem"><a href="#" ng-click="selectEnv(env);">{{env.name}}</a></li>
         </ul>
       </div>
       <div class="btn-group" uib-dropdown is-open="clientopen">
@@ -92,11 +92,7 @@
           Choose client <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-          <li role="menuitem"><a href="#" ng-click="">front</a></li>
-          <li role="menuitem"><a href="#" ng-click="">taptic</a></li>
-          <li role="menuitem"><a href="#" ng-click="">orange new box</a></li>
-          <li role="menuitem"><a href="#" ng-click="">orange mib4</a></li>
-          <li role="menuitem"><a href="#" ng-click="">bouygues miami</a></li>
+          <li ng-repeat="client in clients" role="menuitem"><a href="#" ng-click="selectClient(client)">{{client.name}}</a></li>
         </ul>
       </div>
       </p>

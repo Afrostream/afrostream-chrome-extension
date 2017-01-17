@@ -10,7 +10,7 @@
     "urls": []
   }],
   "browser_action": {
-    "default_icon": "popup/img/ico.png",
+    "default_icon": "popup/img/ico-small-gray.png",
     "default_popup": "popup/popup.html",
     "default_title": "Afrostream"
   },

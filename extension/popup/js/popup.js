@@ -2,7 +2,8 @@ chrome.runtime.getBackgroundPageSafe = function (callback) { chrome.runtime.getB
 
 angular.module('AfrostreamApp', ['ui.bootstrap'])
   .controller('PopupController', function($scope, $http) {
-    $scope.features = []
+    $scope.features = [];
+    $scope.clients = [];
 
     //
     // Methods (could be in another files)
@@ -37,8 +38,28 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
         .reduce((p, c) => { p[c.name] = c.user; return p; }, {});
     };
 
+    const updateWebrequestHooksStatus = function (enableWebrequestHooks) {
+      chrome.runtime.getBackgroundPageSafe(function (w) {
+        w.enableWebRequestHooks(enableWebrequestHooks);
+        // update icone pour montrer que l'on est actif !
+        //dirty.features = (features.length > 0);
+        //updateIco();
+      });
+    }
+
     //
     // GENERAL
+    //
+    $scope.enableWebrequestHooks = false;
+    // load: background -> scope
+    chrome.runtime.getBackgroundPageSafe(function (w) {
+      $scope.enableWebrequestHooks = w.getWebRequestHooksStatus();
+    });
+    // change: scope -> background
+    $scope.updateWebrequestHooksStatus = function (enableWebrequestHooks) {
+      updateWebrequestHooksStatus(enableWebrequestHooks);
+    }
+
     // load: localStorage -> scope
     $scope.bypassCDNCache = JSON.parse(localStorage.getItem('bypassCDNCache') || "false");
     // change: scope -> localStorage
@@ -68,6 +89,7 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
         });
         $scope.updateScope();
       });
+
     // change: scope -> scope & scope -> localStorage
     $scope.updateFeature = function (feature, value) {
       feature.user = value;
@@ -80,8 +102,32 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
       $scope.updateBackground();
     };
 
+    // client list
+    $scope.auth = {
+      email: 'tech@afrostream.tv',
+      envs: [
+        { name: 'staging', url: 'https://afr-back-end-staging.herokuapp.com/auth/ext/token' },
+        { name: 'prod', url: 'https://afrostream-backend.herokuapp.com/auth/ext/token' }
+      ],
+      clients: [],
+      client: null,
+      env: null,
+    }
+    $http({url:'https://afr-back-end-staging.herokuapp.com/api/clients/extList'})
+      .then(function (response) {
+        $scope.auth.clients = response.data;
+      });
+
+    //
+    $scope.selectEnv = function () { };
+    $scope.selectClient = function () { };
+
     // auto-commit: sur n'importe quel changement, scope -> backgroundPage
     $scope.updateBackground = function () {
+      // force update
+      $scope.enableWebrequestHooks = true;
+      updateWebrequestHooksStatus($scope.enableWebrequestHooks);
+      //
       chrome.runtime.getBackgroundPageSafe(function (w) {
         // cdn cache
         w.enableCDNCacheBypass(JSON.parse(localStorage.getItem('bypassCDNCache')||'false'));
