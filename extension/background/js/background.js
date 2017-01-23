@@ -33,7 +33,7 @@ window.removeHeaderAFR = function (key) {
   updateIco();
 };
 
-const afrRegex = /(staging\.afrostream\.tv|\-staging\.herokuapp\.com)/;
+const afrRegex = /(afrostream\.tv|herokuapp\.com)/;
 
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
   if (webRequestHooksEnabled) {
