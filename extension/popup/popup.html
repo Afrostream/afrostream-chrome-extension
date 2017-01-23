@@ -81,7 +81,7 @@
       <p>
       <div class="btn-group" uib-dropdown is-open="envopen">
         <button type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled" style="overflow:hidden;white-space:nowrap;text-overflow: ellipsis;max-width:200px;">
-          {{auth.env||'Choose env'}} <span class="caret"></span>
+          {{auth.env.name||'Choose env'}} <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
           <li ng-repeat="env in auth.envs" role="menuitem"><a href="#" ng-click="selectEnv(env);">{{env.name}}</a></li>
@@ -89,19 +89,18 @@
       </div>
       <div class="btn-group" uib-dropdown is-open="clientopen">
         <button type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled" style="overflow:hidden;white-space:nowrap;text-overflow: ellipsis;max-width:200px;">
-          Choose client <span class="caret"></span>
+          {{auth.client.name||'Choose client'}} <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-          <li ng-repeat="client in clients" role="menuitem"><a href="#" ng-click="selectClient(client)">{{client.name}}</a></li>
+          <li ng-repeat="client in auth.clients" role="menuitem"><a href="#" ng-click="selectClient(client)">{{client.name}}</a></li>
         </ul>
       </div>
       </p>
       <p>
-        <button type="button" class="btn btn-success">GENERATE</button>
+        <button type="button" class="btn btn-success" ng-click="generateToken()">GENERATE</button>
       </p>
-      <pre style="text-align:left;">
-Access-Token:
-      </pre>
+      <pre style="text-align:left;font-size:10px">{{auth.token.accessToken?'Access-Token: '+auth.token.accessToken:''}}
+{{auth.token.refreshToken?'Refresh-Token: '+auth.token.refreshToken:''}}</pre>
     </uib-tab>
   </uib-tabset>
 </body>

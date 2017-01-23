@@ -106,12 +106,13 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
     $scope.auth = {
       email: 'tech@afrostream.tv',
       envs: [
-        { name: 'staging', url: 'https://afr-back-end-staging.herokuapp.com/auth/ext/token' },
-        { name: 'prod', url: 'https://afrostream-backend.herokuapp.com/auth/ext/token' }
+        { name: 'staging', url: 'https://afr-back-end-staging.herokuapp.com/auth/ext/token' }/*,
+        { name: 'prod', url: 'https://afrostream-backend.herokuapp.com/auth/ext/token' }*/
       ],
       clients: [],
       client: null,
       env: null,
+      token: null
     }
     $http({url:'https://afr-back-end-staging.herokuapp.com/api/clients/extList'})
       .then(function (response) {
@@ -119,8 +120,20 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
       });
 
     //
-    $scope.selectEnv = function () { };
-    $scope.selectClient = function () { };
+    $scope.selectEnv = function (env) {
+      $scope.auth.env = env;
+    };
+    $scope.selectClient = function (client) {
+      $scope.auth.client = client;
+    };
+    $scope.generateToken = function () {
+      if ($scope.auth.env && $scope.auth.client) {
+        $http({url:$scope.auth.env.url, params: { clientId: $scope.auth.client._id, secret: '4hrdDRT76mrzg!.#eA45Z4sdf' }})
+          .then(function (response) {
+            $scope.auth.token = response.data;
+          })
+      }
+    };
 
     // auto-commit: sur n'importe quel changement, scope -> backgroundPage
     $scope.updateBackground = function () {
