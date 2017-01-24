@@ -29,7 +29,7 @@ window.addHeaderAFR = function (key, value) {
   updateIco();
 };
 window.removeHeaderAFR = function (key) {
-  delete additionnalHeadersAFR[key];
+  try { delete additionnalHeadersAFR[key]; } catch (e) { }
   updateIco();
 };
 

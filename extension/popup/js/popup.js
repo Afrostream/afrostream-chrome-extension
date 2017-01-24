@@ -103,16 +103,24 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
     };
 
     // client list
-    $scope.auth = {
-      email: 'tech@afrostream.tv',
-      envs: [
-        { name: 'staging', url: 'https://afr-back-end-staging.herokuapp.com/auth/ext/token' }/*,
-        { name: 'prod', url: 'https://afrostream-backend.herokuapp.com/auth/ext/token' }*/
-      ],
-      clients: [],
-      client: null,
-      env: null,
-      token: null
+    $scope.resetToken = function () {
+      $scope.auth = {
+        email: 'tech@afrostream.tv',
+        envs: [
+          { name: 'staging', url: 'https://afr-back-end-staging.herokuapp.com/auth/ext/token' },
+          { name: 'prod', url: 'https://afrostream-backend.herokuapp.com/auth/ext/token' }
+        ],
+        clients: [],
+        client: null,
+        env: null,
+        token: null
+      };
+      localStorage.setItem('auth', JSON.stringify($scope.auth));
+    };
+    if (localStorage.getItem('auth')) {
+      $scope.auth = JSON.parse(localStorage.getItem('auth'));
+    } else {
+      $scope.resetToken();
     }
     $http({url:'https://afr-back-end-staging.herokuapp.com/api/clients/extList'})
       .then(function (response) {
@@ -128,11 +136,27 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
     };
     $scope.generateToken = function () {
       if ($scope.auth.env && $scope.auth.client) {
-        $http({url:$scope.auth.env.url, params: { clientId: $scope.auth.client._id, secret: '4hrdDRT76mrzg!.#eA45Z4sdf' }})
+        $http({url:$scope.auth.env.url, params: {
+          clientId: $scope.auth.client._id,
+          email: $scope.auth.email,
+          secret: '4hrdDRT76mrzg!.#eA45Z4sdf'
+        }})
           .then(function (response) {
             $scope.auth.token = response.data;
+            localStorage.setItem('auth', JSON.stringify($scope.auth));
           })
       }
+    };
+
+    // load: localStorage -> scope
+    $scope.customAuthorizationHeader = JSON.parse(localStorage.getItem('customAuthorizationHeader') || "false");;
+    // change: scope -> localStorage
+    $scope.updateCustomAuthorizationHeader = function (customAuthorizationHeader) {
+      $scope.customAuthorizationHeader = customAuthorizationHeader;
+      localStorage.setItem('customAuthorizationHeader', JSON.stringify(customAuthorizationHeader));
+      // auto-commit des modifs
+      $scope.updateScope();
+      $scope.updateBackground();
     };
 
     // auto-commit: sur n'importe quel changement, scope -> backgroundPage
@@ -153,6 +177,14 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
         } else {
           w.addHeaderAFR(featuresHeaderKey, featuresHeaderValue);
         }
+        if ($scope.customAuthorizationHeader) {
+          // no features
+          w.addHeaderAFR('Authorization', 'Bearer '+$scope.auth.token.accessToken);
+          w.addHeaderAFR('Access-Token', $scope.auth.token.accessToken);
+        } else {
+          w.removeHeaderAFR('Authorization');
+          w.removeHeaderAFR('Access-Token');
+        }
       });
     }
 
@@ -160,11 +192,15 @@ angular.module('AfrostreamApp', ['ui.bootstrap'])
     $scope.updateScope = function () {
       const featuresHeaderKey = 'Features';
       const featuresHeaderValue = JSON.stringify(getUserFeatures($scope.features));
-      if (featuresHeaderValue === '{}') {
-        $scope.headers = '';
-      } else {
-        $scope.headers = 'Features: '+featuresHeaderValue;
+      const headers = [];
+      if (featuresHeaderValue !== '{}') {
+        headers.push('Features: '+featuresHeaderValue);
       }
+      if ($scope.customAuthorizationHeader) {
+        headers.push('Authorization: Bearer '+$scope.auth.token.accessToken);
+        headers.push('Access-Token: '+$scope.auth.token.accessToken);
+      }
+      $scope.headers = headers;
     };
 
     $scope.updateScope();

@@ -43,9 +43,7 @@
       <input type="checkbox" ng-model="enableWebrequestHooks" ng-change="updateWebrequestHooksStatus(enableWebrequestHooks)"/>&nbsp;extension active<br/>
       <input type="checkbox" ng-model="bypassCDNCache" ng-change="updateCDNCacheBypass(bypassCDNCache)"/>&nbsp;bypass cdn cache<br/>
       <h4>Headers</h4>
-      <pre style="text-align:left;">
-{{headers}}
-      </pre>
+      <pre style="text-align:left;" ng-repeat="header in headers">{{header}}</pre>
     </uib-tab>
     <uib-tab index="1" heading="Features">
       <table class="features">
@@ -101,6 +99,9 @@
       </p>
       <pre style="text-align:left;font-size:10px">{{auth.token.accessToken?'Access-Token: '+auth.token.accessToken:''}}
 {{auth.token.refreshToken?'Refresh-Token: '+auth.token.refreshToken:''}}</pre>
+      <p>
+        <input type="checkbox" ng-model="customAuthorizationHeader" ng-change="updateCustomAuthorizationHeader(customAuthorizationHeader)"/>&nbsp;Header Authorization<br/>
+      </p>
     </uib-tab>
   </uib-tabset>
 </body>
